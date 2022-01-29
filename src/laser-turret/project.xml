@@ -2,6 +2,7 @@
   <repositories>
     <repository><path>../../external/modm/repo.lb</path></repository>
   </repositories>
+  <extends>modm:black-pill-f411</extends>
   <options>
     <option name="modm:build:project.name">laser_turret</option>
   </options>
