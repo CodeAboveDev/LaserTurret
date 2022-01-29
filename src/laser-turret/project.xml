@@ -1,0 +1,10 @@
+<library>
+  <repositories>
+    <repository><path>../../external/modm/repo.lb</path></repository>
+  </repositories>
+  <options>
+    <option name="modm:build:project.name">laser_turret</option>
+  </options>
+  <modules>
+  </modules>
+</library>
