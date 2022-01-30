@@ -110,6 +110,7 @@ config.log
 
 # Code generated using lbuild and modm library
 project.xml.log
+src/laser-turret/SConstruct
 src/laser-turret/modm/
 
 # End of https://www.toptal.com/developers/gitignore/api/c,c++,visualstudiocode,scons
