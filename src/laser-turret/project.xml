@@ -5,7 +5,9 @@
   <extends>modm:black-pill-f411</extends>
   <options>
     <option name="modm:build:project.name">laser_turret</option>
+    <option name="modm:build:openocd.cfg">interface/stlink.cfg</option>
   </options>
   <modules>
+    <module>modm:build:scons</module>
   </modules>
 </library>
