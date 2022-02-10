@@ -23,23 +23,25 @@ int main()
     uint16_t brightness = 0u;
 
     /***** SERVOS *****/
-    using BottomServo = GpioOutputA8;
-    using TopServo = GpioOutputA9;
+    using BottomServo = GpioOutputA9;
+    using TopServo = GpioOutputA8;
 
-    Timer1::connect<BottomServo::Ch1, TopServo::Ch2>();
+    Timer1::connect<BottomServo::Ch2, TopServo::Ch1>();
     Timer1::enable();
     Timer1::enableOutput();
     Timer1::setMode(Timer1::Mode::UpCounter);
 
-    Timer1::setPeriod<Board::SystemClock>(20000);
+    // Timer1::setPeriod<Board::SystemClock>(20000);
+    Timer1::setPrescaler(84);
+    Timer1::setOverflow(20000);
     Timer1::configureOutputChannel(1, Timer1::OutputCompareMode::Pwm, 0);
     Timer1::configureOutputChannel(2, Timer1::OutputCompareMode::Pwm, 0);
 
     Timer1::applyAndReset();
     Timer1::start();
 
-    Timer1::setCompareValue(1, 4846);
-    Timer1::setCompareValue(2, 4846);
+    Timer1::setCompareValue(1, 1500);
+    Timer1::setCompareValue(2, 1500);
     uint8_t i = 0u;
 
     while (true)
@@ -53,22 +55,26 @@ int main()
         switch(i)
         {
             case 0:
-                Timer1::setCompareValue(1, 4846);
-                Timer1::setCompareValue(2, 4846);
+                Timer1::setCompareValue(1, 2400);
+                Timer1::setCompareValue(2, 2400);
                 break;
             case 1:
-                Timer1::setCompareValue(1, 3230);
-                Timer1::setCompareValue(2, 3230);
+                Timer1::setCompareValue(1, 1500);
+                Timer1::setCompareValue(2, 1500);
                 break;
             case 2:
-                Timer1::setCompareValue(1, 6461);
-                Timer1::setCompareValue(2, 6461);
+                Timer1::setCompareValue(1, 2400);
+                Timer1::setCompareValue(2, 600);
+                break;
+            case 3:
+                Timer1::setCompareValue(1, 1500);
+                Timer1::setCompareValue(2, 1500);
                 break;
             default:
                 break;
         }
         i++;
-        if(i>2) i=0u;
+        if(i>3) i=0u;
     }
 
     return 0;
