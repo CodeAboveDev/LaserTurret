@@ -10,6 +10,7 @@
   </options>
   <modules>
     <module>modm:build:scons</module>
+    <module>modm:platform:timer:1</module>
     <module>modm:platform:timer:2</module>
   </modules>
 </library>
