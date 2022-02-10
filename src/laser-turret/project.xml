@@ -10,6 +10,9 @@
   </options>
   <modules>
     <module>modm:build:scons</module>
+    <module>modm:driver:hd44780</module>
+    <module>modm:driver:pca8574</module>
+    <module>modm:platform:i2c:1</module>
     <module>modm:platform:timer:1</module>
     <module>modm:platform:timer:2</module>
   </modules>
