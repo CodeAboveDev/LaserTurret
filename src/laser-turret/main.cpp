@@ -1,6 +1,7 @@
 #include <modm/board.hpp>
 #include <modm/driver/display/hd44780.hpp>
 #include <modm/driver/gpio/pca8574.hpp>
+#include "laser.h"
     
     using LcdI2c = I2cMaster1;
 
@@ -24,22 +25,18 @@ int main()
     Board::Leds::setOutput();
 
     /***** LASER DIODE *****/
-    using Laser = GpioOutputA5;
-    // Laser::setOutput();
-
-    Timer2::connect<Laser::Ch1>();
+    Timer2::connect<GpioA5::Ch1>();
     Timer2::enable();
     Timer2::setMode(Timer2::Mode::UpCounter);
 
-    Timer2::setPrescaler(8);
-	Timer2::setOverflow(65535);
+    Timer2::setPrescaler(84);
+    Timer2::setOverflow(100);
     Timer2::configureOutputChannel(1, Timer2::OutputCompareMode::Pwm, 0);
 
     Timer2::applyAndReset();
     Timer2::start();
-
-    uint16_t brightness = 0u;
-
+    Laser<Timer2> laser{1};
+    
     /***** SERVOS *****/
     using BottomServo = GpioOutputA9;
     using TopServo = GpioOutputA8;
@@ -82,31 +79,33 @@ int main()
 
 	lcd << "Laser Turret\n";
 
+    uint8_t brightness{0u};
     while (true)
     {
         Board::Leds::toggle();
         // Laser::toggle();
         modm::delay_ms(1000);
-        brightness += 5000u;
+        brightness += 20u;
         Timer2::setCompareValue(1, brightness);
+        laser.setBrightness(brightness % 100);
 
         switch(i)
         {
             case 0:
-                Timer1::setCompareValue(1, 2400);
-                Timer1::setCompareValue(2, 2400);
+                // Timer1::setCompareValue(1, 2400);
+                // Timer1::setCompareValue(2, 2400);
                 break;
             case 1:
-                Timer1::setCompareValue(1, 1500);
-                Timer1::setCompareValue(2, 1500);
+                // Timer1::setCompareValue(1, 1500);
+                // Timer1::setCompareValue(2, 1500);
                 break;
             case 2:
-                Timer1::setCompareValue(1, 2400);
-                Timer1::setCompareValue(2, 600);
+                // Timer1::setCompareValue(1, 2400);
+                // Timer1::setCompareValue(2, 600);
                 break;
             case 3:
-                Timer1::setCompareValue(1, 1500);
-                Timer1::setCompareValue(2, 1500);
+                // Timer1::setCompareValue(1, 1500);
+                // Timer1::setCompareValue(2, 1500);
                 break;
             default:
                 break;
