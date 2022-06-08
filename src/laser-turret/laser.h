@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2020 CodeAbove.
+ * Copyright (c) 2022 CodeAbove.
  * All rights reserved.
  *
  * This software component is licensed by CodeAbove under
@@ -12,8 +12,8 @@
 #define LASER_H
 
 #include <modm/board.hpp>
-#include <modm/platform/timer/basic_base.hpp>
 #include <modm/platform/gpio/base.hpp>
+#include <modm/platform/timer/basic_base.hpp>
 
 template<typename TIMER>
 class Laser

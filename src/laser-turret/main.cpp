@@ -1,7 +1,9 @@
+#include "laser.h"
+#include "servo.h"
+
 #include <modm/board.hpp>
 #include <modm/driver/display/hd44780.hpp>
 #include <modm/driver/gpio/pca8574.hpp>
-#include "laser.h"
     
     using LcdI2c = I2cMaster1;
 
