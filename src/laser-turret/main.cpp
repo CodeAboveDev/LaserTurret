@@ -1,25 +1,26 @@
 #include "laser.h"
+#include "motion.h"
 #include "servo.h"
 
 #include <modm/board.hpp>
 #include <modm/driver/display/hd44780.hpp>
 #include <modm/driver/gpio/pca8574.hpp>
     
-    using LcdI2c = I2cMaster1;
+using LcdI2c = I2cMaster1;
 
-	using GpioExpander = modm::Pca8574<LcdI2c>;
-	GpioExpander gpioExpander;
+using GpioExpander = modm::Pca8574<LcdI2c>;
+GpioExpander gpioExpander;
 
-	// Instances for each pin
-	using expRs = GpioExpander::P0< gpioExpander >;
-	using expRw = GpioExpander::P1< gpioExpander >;
-	using expE = GpioExpander::P2< gpioExpander > ;
-	using expBacklight = GpioExpander::P3< gpioExpander > ;
-	using expPin4 = GpioExpander::P4< gpioExpander > ;
-	using expPin5 = GpioExpander::P5< gpioExpander > ;
-	using expPin6 = GpioExpander::P6< gpioExpander > ;
-	using expPin7 = GpioExpander::P7< gpioExpander > ;
-	using expData4BitGpio = GpioExpander::Port< gpioExpander, GpioExpander::Pin::P4, 4 >;
+// Instances for each pin
+using expRs = GpioExpander::P0< gpioExpander >;
+using expRw = GpioExpander::P1< gpioExpander >;
+using expE = GpioExpander::P2< gpioExpander > ;
+using expBacklight = GpioExpander::P3< gpioExpander > ;
+using expPin4 = GpioExpander::P4< gpioExpander > ;
+using expPin5 = GpioExpander::P5< gpioExpander > ;
+using expPin6 = GpioExpander::P6< gpioExpander > ;
+using expPin7 = GpioExpander::P7< gpioExpander > ;
+using expData4BitGpio = GpioExpander::Port< gpioExpander, GpioExpander::Pin::P4, 4 >;
 
 int main()
 {
@@ -48,7 +49,6 @@ int main()
     Timer1::enableOutput();
     Timer1::setMode(Timer1::Mode::UpCounter);
 
-    // Timer1::setPeriod<Board::SystemClock>(20000);
     Timer1::setPrescaler(84);
     Timer1::setOverflow(20000);
     Timer1::configureOutputChannel(1, Timer1::OutputCompareMode::Pwm, 0);
@@ -57,9 +57,8 @@ int main()
     Timer1::applyAndReset();
     Timer1::start();
 
-    Timer1::setCompareValue(1, 1500);
-    Timer1::setCompareValue(2, 1500);
-    uint8_t i = 0u;
+    Servo<Timer1> topServo{1, 1500, 1000, 2000};
+    Servo<Timer1> bottomServo{2, 1500, 1000, 2000};
 
     /***** LCD *****/
     using LcdScl = GpioB6;
@@ -81,39 +80,15 @@ int main()
 
 	lcd << "Laser Turret\n";
 
-    uint8_t brightness{0u};
+    Motion<Timer1> motion{bottomServo, topServo, 10};
+    motion.Initialize();
+    modm::delay_ms(100);
+    motion.SetTargetPosition({2000, 2000}, 5000);
+
     while (true)
     {
-        Board::Leds::toggle();
-        // Laser::toggle();
-        modm::delay_ms(1000);
-        brightness += 20u;
-        Timer2::setCompareValue(1, brightness);
-        laser.setBrightness(brightness % 100);
-
-        switch(i)
-        {
-            case 0:
-                // Timer1::setCompareValue(1, 2400);
-                // Timer1::setCompareValue(2, 2400);
-                break;
-            case 1:
-                // Timer1::setCompareValue(1, 1500);
-                // Timer1::setCompareValue(2, 1500);
-                break;
-            case 2:
-                // Timer1::setCompareValue(1, 2400);
-                // Timer1::setCompareValue(2, 600);
-                break;
-            case 3:
-                // Timer1::setCompareValue(1, 1500);
-                // Timer1::setCompareValue(2, 1500);
-                break;
-            default:
-                break;
-        }
-        i++;
-        if(i>3) i=0u;
+        modm::delay_ms(10);
+        motion.Perform();
     }
 
     return 0;
