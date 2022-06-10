@@ -41,6 +41,16 @@ public:
         TIMER::setCompareValue(_channel, _dutyCycle);
     }
 
+    void center(void)
+    {
+        setDutyCycle(_minDutyCycle+((_maxDutyCycle-_minDutyCycle)/2));
+    }
+
+    uint16_t getDutyCycle(void)
+    {
+        return _dutyCycle;
+    }
+
 private:
     uint8_t _channel;
 
